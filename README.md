@@ -12,7 +12,7 @@ Deploys as-is to Vercel, Netlify or any static host (set the project root to thi
     index.html, privacy.html, 404.html   Pages
     styles.css                           Design tokens (top of file), layout, motion states
     main.js                              Intro, header, menu, reveals, parallax, craft sequence
-    hero-slats.webp, int-*.webp, og.jpg  Imagery (int-* are design-reference interiors)
+    hero-slats.webp, int-*.webp, og.jpg  Imagery (int-* are interiors)
     symbol*.png, logo-*.png, favicon.png Logo files
     vercel.json, robots.txt, sitemap.xml Hosting and SEO config
 
@@ -26,12 +26,12 @@ Search indexing is switched on. To keep the site hidden, set `index, follow` to 
 
 ## Later
 - Replace the PNG logos with traced vector artwork when available (brand guide, p.12).
-- Swap in real project photography when ready (update alt text, and the "Design reference" labels).
+- Swap in real project photography when ready (update alt text).
 - Have privacy.html reviewed by a lawyer; update it if analytics or a CRM is added.
 
 ## Imagery
-Interiors (`int-*.webp`) are supplied design-reference images, graded lightly warm and labelled 'Design reference'. Exteriors are crops of the two brand application visualisations. They are not completed
-projects and are labelled as such on the page. To swap one, replace the file in
+Interiors (`int-*.webp`) are supplied interior images, graded lightly warm.
+To swap an image, replace the file in
 the repo root (keep the name) or edit the `src`, `width`, `height` and `alt` in index.html.
 Aim for 2400px+ wide originals; the current crops are upscaled and soft at large sizes.
 
