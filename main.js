@@ -84,10 +84,24 @@
      then a small mark appears and the curtain lifts. */
   function runIntro(done) {
     var steps = [
-      [1500, 'add', 's1'], [700, 'remove', 's1'], [1000, 'add', 's2'], [1000, 'add', 's3'],
-      [1000, 'remove', 's2'], [1000, 'add', 's4'], [900, 'done']
+      [1600, 'add', 's1'], [900, 'remove', 's1'], [1100, 'add', 's2'], [1800, 'add', 's3'],
+      [1300, 'remove', 's2'], [1300, 'add', 's4'], [1000, 'done']
     ];
     var i = 0;
+    /* Distance each word travels from its screen edge to its resting place beside the other */
+    (function setWords() {
+      var ph = intro.querySelector('.intro__phrase');
+      if (!ph) return;
+      var w = ph.children, W = window.innerWidth, g = Math.min(56, Math.max(20, W * 0.032));
+      w[0].style.transition = w[1].style.transition = 'none';
+      w[0].style.transform = w[1].style.transform = 'none';
+      var a = w[0].getBoundingClientRect(), b = w[1].getBoundingClientRect();
+      w[0].style.transform = w[1].style.transform = '';
+      void ph.offsetWidth;
+      w[0].style.transition = w[1].style.transition = '';
+      ph.style.setProperty('--lx', (g - a.left).toFixed(1) + 'px');
+      ph.style.setProperty('--rx', ((W - g) - b.right).toFixed(1) + 'px');
+    })();
     function next() {
       if (introEnded) return;
       var s = steps[i++];
