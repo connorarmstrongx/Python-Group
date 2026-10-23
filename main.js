@@ -66,8 +66,11 @@
     root.classList.add('hero-ready');
     setTimeout(function () { root.classList.add('hero-settled'); }, 2200);
   }
+  var introTimers = [], introEnded = false;
   function endIntro() {
-    if (!intro) return;
+    if (!intro || introEnded) return;
+    introEnded = true;
+    introTimers.forEach(clearTimeout);
     intro.classList.add('is-leaving');
     root.classList.remove('intro-lock');
     heroReady();
@@ -75,18 +78,40 @@
       root.classList.remove('is-intro');
       if (intro.parentNode) intro.parentNode.removeChild(intro);
       try { sessionStorage.setItem('pg-intro', '1'); } catch (e) { /* ignore */ }
-    }, 1300);
+    }, 1000);
+  }
+  /* Intro: mark fades in and out, "Built" and "with intent." arrive from the edges and meet in the centre,
+     then a small mark appears and the curtain lifts. */
+  function runIntro(done) {
+    var steps = [
+      [1500, 'add', 's1'], [700, 'remove', 's1'], [1000, 'add', 's2'], [1000, 'add', 's3'],
+      [1000, 'remove', 's2'], [1000, 'add', 's4'], [900, 'done']
+    ];
+    var i = 0;
+    function next() {
+      if (introEnded) return;
+      var s = steps[i++];
+      if (!s) return;
+      if (s[1] === 'done') { done(); return; }
+      intro.classList[s[1]](s[2]);
+      introTimers.push(setTimeout(next, s[0]));
+    }
+    introTimers.push(setTimeout(next, 500));
+    intro.addEventListener('click', done);
+    window.addEventListener('keydown', function (e) { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') done(); });
   }
   if (motion) {
     var imgReady = heroImg && heroImg.decode ? heroImg.decode().catch(function () {}) : Promise.resolve();
-    var minTime = new Promise(function (r) { setTimeout(r, root.classList.contains('is-intro') ? 1900 : 150); });
-    if (root.classList.contains('is-intro')) root.classList.add('intro-lock');
-    Promise.race([
-      Promise.all([imgReady, minTime]),
-      new Promise(function (r) { setTimeout(r, 4500); })
-    ]).then(function () {
-      if (root.classList.contains('is-intro')) endIntro(); else heroReady();
-    });
+    if (root.classList.contains('is-intro') && intro) {
+      root.classList.add('intro-lock');
+      var played = new Promise(function (r) { runIntro(r); });
+      Promise.race([Promise.all([imgReady, played]), new Promise(function (r) { setTimeout(r, 14000); })]).then(endIntro);
+      played.then(function () { /* skipped or finished */ });
+    } else {
+      Promise.race([imgReady, new Promise(function (r) { setTimeout(r, 4500); })]).then(function () {
+        new Promise(function (r) { setTimeout(r, 150); }).then(heroReady);
+      });
+    }
   }
 
   /* ---- Header ------------------------------------------------------------- */
